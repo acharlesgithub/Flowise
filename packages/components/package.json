@@ -1,5 +1,5 @@
 {
-    "name": "brand-ai-components",
+    "name": "flowise-components",
     "version": "0.1.0",
     "description": "[BRAND] AI Components",
     "main": "dist/src/index",

@@ -1,5 +1,5 @@
 {
-    "name": "brand-ai-server",
+    "name": "flowise",
     "version": "0.1.0",
     "description": "[BRAND] AI Server",
     "main": "dist/index",
