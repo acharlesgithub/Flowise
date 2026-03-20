@@ -109,7 +109,7 @@ export const defaultThemeConfig = {
     },
     disclaimer: {
         title: 'Disclaimer',
-        message: 'By using this chatbot, you agree to the <a target="_blank" href="https://flowiseai.com/terms">Terms & Condition</a>',
+        message: 'By using this chatbot, you agree to the <a target="_blank" href="https://[BRAND].ai/terms">Terms & Condition</a>',
         textColor: 'black',
         buttonColor: '#3b82f6',
         buttonText: 'Start Chatting',
@@ -171,7 +171,7 @@ export const defaultThemeConfig = {
             textColor: '#303235',
             text: 'Powered by',
             company: 'Flowise',
-            companyLink: 'https://flowiseai.com'
+            companyLink: 'https://[BRAND].ai'
         }
     }
 }
