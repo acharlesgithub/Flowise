@@ -1,7 +1,7 @@
 {
-    "name": "flowise",
-    "version": "3.1.0",
-    "description": "Flowiseai Server",
+    "name": "brand-ai-server",
+    "version": "0.1.0",
+    "description": "[BRAND] AI Server",
     "main": "dist/index",
     "types": "dist/index.d.ts",
     "bin": {

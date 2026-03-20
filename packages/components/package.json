@@ -1,7 +1,7 @@
 {
-    "name": "flowise-components",
-    "version": "3.1.0",
-    "description": "Flowiseai Components",
+    "name": "brand-ai-components",
+    "version": "0.1.0",
+    "description": "[BRAND] AI Components",
     "main": "dist/src/index",
     "types": "dist/src/index.d.ts",
     "scripts": {

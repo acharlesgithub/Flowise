@@ -1,11 +1,10 @@
 {
-    "name": "flowise-ui",
-    "version": "3.1.0",
-    "license": "SEE LICENSE IN LICENSE.md",
-    "homepage": "https://flowiseai.com",
+    "name": "brand-ai-ui",
+    "version": "0.1.0",
+    "license": "Apache-2.0",
+    "homepage": "https://brand.ai",
     "author": {
-        "name": "HenryHeng",
-        "email": "henryheng@flowiseai.com"
+        "name": "acharlesgithub"
     },
     "dependencies": {
         "@codemirror/lang-javascript": "^6.2.1",

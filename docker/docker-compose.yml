@@ -1,8 +1,8 @@
 version: '3.1'
 
 services:
-    flowise:
-        image: flowiseai/flowise:latest
+    brand-ai:
+        image: brand-ai:latest
         restart: always
         environment:
             - PORT=${PORT}
@@ -149,5 +149,5 @@ services:
             retries: 5
             start_period: 30s
         volumes:
-            - ~/.flowise:/root/.flowise
+            - ~/.brand-ai:/root/.brand-ai
         entrypoint: /bin/sh -c "sleep 3; flowise start"

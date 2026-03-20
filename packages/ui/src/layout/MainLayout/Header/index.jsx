@@ -195,23 +195,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
         }
     }, [logoutApi.data])
 
-    useEffect(() => {
-        if (isCloud || isOpenSource) {
-            const fetchStarCount = async () => {
-                try {
-                    const response = await fetch('https://api.github.com/repos/FlowiseAI/Flowise')
-                    const data = await response.json()
-                    if (data.stargazers_count) {
-                        setStarCount(data.stargazers_count)
-                    }
-                } catch (error) {
-                    setStarCount(0)
-                }
-            }
-
-            fetchStarCount()
-        }
-    }, [isCloud, isOpenSource])
+    // GitHub star count fetch removed (rebranded)
 
     return (
         <>
@@ -250,24 +234,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     </ButtonBase>
                 )}
             </Box>
-            {isCloud || isOpenSource ? (
-                <Box
-                    sx={{
-                        flexGrow: 1,
-                        px: 4,
-                        display: 'flex',
-                        alignItems: 'center',
-                        '& span': {
-                            display: 'flex',
-                            alignItems: 'center'
-                        }
-                    }}
-                >
-                    <GitHubStarButton starCount={starCount} isDark={isDark} />
-                </Box>
-            ) : (
-                <Box sx={{ flexGrow: 1 }} />
-            )}
+            <Box sx={{ flexGrow: 1 }} />
             {isEnterpriseLicensed && isAuthenticated && <WorkspaceSwitcher />}
             {isCloud && isAuthenticated && <OrgWorkspaceBreadcrumbs />}
             {isCloud && currentUser?.isOrganizationAdmin && (
