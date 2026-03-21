@@ -1,4 +1,4 @@
-import { ICommonObject, removeFolderFromStorage } from 'flowise-components'
+import { ICommonObject, removeFolderFromStorage } from 'voxscribe-components'
 import { StatusCodes } from 'http-status-codes'
 import { In } from 'typeorm'
 import { validate as isValidUUID } from 'uuid'

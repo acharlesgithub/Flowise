@@ -12,7 +12,7 @@ import {
     IServerSideEventStreamer,
     convertChatHistoryToText,
     generateFollowUpPrompts
-} from 'flowise-components'
+} from 'voxscribe-components'
 import {
     IncomingAgentflowInput,
     INodeData,

@@ -1,4 +1,4 @@
-import { extractResponseContent, ICommonObject } from 'flowise-components'
+import { extractResponseContent, ICommonObject } from 'voxscribe-components'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep, isEqual, uniqWith } from 'lodash'
 import OpenAI from 'openai'

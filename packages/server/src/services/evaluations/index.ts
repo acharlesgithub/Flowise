@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
-import { EvaluationRunner, ICommonObject } from 'flowise-components'
+import { EvaluationRunner, ICommonObject } from 'voxscribe-components'
 import { getRunningExpressApp } from '../../utils/getRunningExpressApp'
 import { InternalFlowiseError } from '../../errors/internalFlowiseError'
 import { getErrorMessage } from '../../errors/utils'

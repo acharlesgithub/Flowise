@@ -2,7 +2,7 @@ import * as fs from 'fs'
 import config from './config' // should be replaced by node-config or similar
 import { createLogger, transports, format } from 'winston'
 import { NextFunction, Request, Response } from 'express'
-import { StorageProviderFactory } from 'flowise-components'
+import { StorageProviderFactory } from 'voxscribe-components'
 
 const { combine, timestamp, printf, errors } = format
 

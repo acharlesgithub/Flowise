@@ -1,4 +1,4 @@
-import { removeFilesFromStorage } from 'flowise-components'
+import { removeFilesFromStorage } from 'voxscribe-components'
 import { StatusCodes } from 'http-status-codes'
 import { DeleteResult, FindOptionsWhere, In } from 'typeorm'
 import { ChatMessage } from '../../database/entities/ChatMessage'

@@ -39,7 +39,7 @@ import {
     FlowiseMemory,
     IFileUpload,
     StorageProviderFactory
-} from 'flowise-components'
+} from 'voxscribe-components'
 import { randomBytes } from 'crypto'
 import { AES, enc } from 'crypto-js'
 
