@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { baseURL, ErrorMessage } from '@/store/constant'
-import AuthUtils from '@/utils/authUtils'
+import { baseURL } from '@/store/constant'
 
 const apiClient = axios.create({
     baseURL: `${baseURL}/api/v1`,
@@ -16,22 +15,11 @@ apiClient.interceptors.response.use(
         return response
     },
     async (error) => {
-        if (error.response.status === 401) {
-            // check if refresh is needed
-            if (error.response.data.message === ErrorMessage.TOKEN_EXPIRED && error.response.data.retry === true) {
-                const originalRequest = error.config
-                // call api to get new token
-                const response = await axios.post(`${baseURL}/api/v1/auth/refreshToken`, {}, { withCredentials: true })
-                if (response.data.id) {
-                    // retry the original request
-                    return apiClient.request(originalRequest)
-                }
-            }
-            localStorage.removeItem('username')
-            localStorage.removeItem('password')
-            AuthUtils.removeCurrentUser()
+        if (error.response && error.response.status === 401) {
+            // Clerk handles session refresh automatically
+            // If we still get 401, redirect to login
+            window.location.href = '/'
         }
-
         return Promise.reject(error)
     }
 )
