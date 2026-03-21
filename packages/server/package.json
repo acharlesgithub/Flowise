@@ -1,11 +1,11 @@
 {
-    "name": "flowise",
+    "name": "voxscribe",
     "version": "0.1.0",
-    "description": "[BRAND] AI Server",
+    "description": "VoxScribe AI Server",
     "main": "dist/index",
     "types": "dist/index.d.ts",
     "bin": {
-        "flowise": "./bin/run"
+        "voxscribe": "./bin/run"
     },
     "files": [
         "bin",
@@ -16,7 +16,7 @@
         "oauth2.html"
     ],
     "oclif": {
-        "bin": "flowise",
+        "bin": "voxscribe",
         "commands": "./dist/commands"
     },
     "scripts": {
@@ -52,10 +52,10 @@
         "test:coverage": "jest --coverage"
     },
     "keywords": [],
-    "homepage": "https://flowiseai.com",
+    "homepage": "https://vox-scribe.com",
     "author": {
-        "name": "Henry Heng",
-        "email": "henryheng@flowiseai.com"
+        "name": "VoxScribe",
+        "email": "hello@vox-scribe.com"
     },
     "engines": {
         "node": ">=18.15.0 <19.0.0 || ^20"
@@ -106,9 +106,9 @@
         "express-mysql-session": "^3.0.3",
         "express-rate-limit": "^6.9.0",
         "express-session": "^1.18.1",
-        "flowise-components": "workspace:^",
+        "voxscribe-components": "workspace:^",
         "flowise-nim-container-manager": "^1.0.11",
-        "flowise-ui": "workspace:^",
+        "voxscribe-ui": "workspace:^",
         "global-agent": "^3.0.0",
         "gulp": "^4.0.2",
         "handlebars": "^4.7.8",

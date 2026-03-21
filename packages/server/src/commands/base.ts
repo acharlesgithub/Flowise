@@ -13,14 +13,14 @@ enum EXIT_CODE {
 export abstract class BaseCommand extends Command {
     static flags = {
         // General Settings
-        FLOWISE_FILE_SIZE_LIMIT: Flags.string(),
+        VOXSCRIBE_FILE_SIZE_LIMIT: Flags.string(),
         PORT: Flags.string(),
         CORS_ORIGINS: Flags.string(),
         IFRAME_ORIGINS: Flags.string(),
         DEBUG: Flags.string(),
         NUMBER_OF_PROXIES: Flags.string(),
         SHOW_COMMUNITY_NODES: Flags.string(),
-        DISABLE_FLOWISE_TELEMETRY: Flags.string(),
+        DISABLE_VOXSCRIBE_TELEMETRY: Flags.string(),
         DISABLED_NODES: Flags.string(),
 
         // Logging
@@ -76,7 +76,7 @@ export abstract class BaseCommand extends Command {
         // Credentials / Secret Keys
         SECRETKEY_STORAGE_TYPE: Flags.string(),
         SECRETKEY_PATH: Flags.string(),
-        FLOWISE_SECRETKEY_OVERWRITE: Flags.string(),
+        VOXSCRIBE_SECRETKEY_OVERWRITE: Flags.string(),
         SECRETKEY_AWS_ACCESS_KEY: Flags.string(),
         SECRETKEY_AWS_SECRET_KEY: Flags.string(),
         SECRETKEY_AWS_REGION: Flags.string(),
@@ -135,7 +135,7 @@ export abstract class BaseCommand extends Command {
 
         // Enterprise
         LICENSE_URL: Flags.string(),
-        FLOWISE_EE_LICENSE_KEY: Flags.string(),
+        VOXSCRIBE_EE_LICENSE_KEY: Flags.string(),
         OFFLINE: Flags.string(),
 
         // Metrics

@@ -7,7 +7,7 @@
  * The Open Source version is licensed under the Apache License, Version 2.0 (the "License")
  *
  * For information about licensing of the Enterprise and Cloud versions, please contact:
- * security@flowiseai.com
+ * security@vox-scribe.com
  */
 
 import axios from 'axios'
@@ -101,10 +101,10 @@ export class IdentityManager {
 
     private _validateLicenseKey = async () => {
         const LICENSE_URL = process.env.LICENSE_URL
-        const FLOWISE_EE_LICENSE_KEY = process.env.FLOWISE_EE_LICENSE_KEY
+        const VOXSCRIBE_EE_LICENSE_KEY = process.env.VOXSCRIBE_EE_LICENSE_KEY
 
         // First check if license key is missing
-        if (!FLOWISE_EE_LICENSE_KEY) {
+        if (!VOXSCRIBE_EE_LICENSE_KEY) {
             this.licenseValid = false
             this.currentInstancePlatform = Platform.OPEN_SOURCE
             return
@@ -112,7 +112,7 @@ export class IdentityManager {
 
         try {
             if (process.env.OFFLINE === 'true') {
-                const decodedLicense = this._offlineVerifyLicense(FLOWISE_EE_LICENSE_KEY)
+                const decodedLicense = this._offlineVerifyLicense(VOXSCRIBE_EE_LICENSE_KEY)
 
                 if (!decodedLicense) {
                     this.licenseValid = false
@@ -137,7 +137,7 @@ export class IdentityManager {
                 this.currentInstancePlatform = Platform.ENTERPRISE
             } else if (LICENSE_URL) {
                 try {
-                    const response = await axios.post(`${LICENSE_URL}/enterprise/verify`, { license: FLOWISE_EE_LICENSE_KEY })
+                    const response = await axios.post(`${LICENSE_URL}/enterprise/verify`, { license: VOXSCRIBE_EE_LICENSE_KEY })
                     this.licenseValid = response.data?.valid
 
                     if (!LICENSE_URL.includes('api')) this.currentInstancePlatform = Platform.ENTERPRISE

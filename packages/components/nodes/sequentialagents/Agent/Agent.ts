@@ -218,7 +218,7 @@ class Agent_SeqAgents implements INode {
         this.category = 'Sequential Agents'
         this.description = 'Agent that can execute tools'
         this.baseClasses = [this.type]
-        this.documentation = 'https://docs.flowiseai.com/using-flowise/agentflows/sequential-agents#id-4.-agent-node'
+        this.documentation = 'https://docs.vox-scribe.com/using-flowise/agentflows/sequential-agents#id-4.-agent-node'
         this.inputs = [
             {
                 label: 'Agent Name',

@@ -1548,8 +1548,8 @@ export const isFlowValidForStream = (reactFlowNodes: IReactFlowNode[], endingNod
  * @returns {Promise<string>}
  */
 export const getEncryptionKey = async (): Promise<string> => {
-    if (process.env.FLOWISE_SECRETKEY_OVERWRITE !== undefined && process.env.FLOWISE_SECRETKEY_OVERWRITE !== '') {
-        return process.env.FLOWISE_SECRETKEY_OVERWRITE
+    if (process.env.VOXSCRIBE_SECRETKEY_OVERWRITE !== undefined && process.env.VOXSCRIBE_SECRETKEY_OVERWRITE !== '') {
+        return process.env.VOXSCRIBE_SECRETKEY_OVERWRITE
     }
     if (USE_AWS_SECRETS_MANAGER && secretsManagerClient) {
         const secretId = process.env.SECRETKEY_AWS_NAME || 'FlowiseEncryptionKey'
@@ -1698,7 +1698,7 @@ export const getOrCreateStoredSecret = async (options: GetOrCreateStoredSecretOp
     }
 
     if (USE_AWS_SECRETS_MANAGER && secretsManagerClient) {
-        const prefix = process.env.SECRETKEY_AWS_AUTH_PREFIX || 'Flowise'
+        const prefix = process.env.SECRETKEY_AWS_AUTH_PREFIX || 'VoxScribe'
         const secretId = prefix + awsSecretIdSuffix
         try {
             const command = new GetSecretValueCommand({ SecretId: secretId })

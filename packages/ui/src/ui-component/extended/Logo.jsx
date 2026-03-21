@@ -16,7 +16,7 @@ const Logo = () => {
                     letterSpacing: '-0.02em'
                 }}
             >
-                [BRAND]
+                VoxScribe
             </span>
         </div>
     )

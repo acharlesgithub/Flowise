@@ -1,8 +1,8 @@
 version: '3.1'
 
 services:
-    flowise:
-        image: flowiseai/flowise-worker:latest
+    voxscribe:
+        image: voxscribeai/voxscribe-worker:latest
         restart: always
         environment:
             - WORKER_PORT=${WORKER_PORT:-5566}
@@ -21,7 +21,7 @@ services:
             # SECRET KEYS
             - SECRETKEY_STORAGE_TYPE=${SECRETKEY_STORAGE_TYPE}
             - SECRETKEY_PATH=${SECRETKEY_PATH}
-            - FLOWISE_SECRETKEY_OVERWRITE=${FLOWISE_SECRETKEY_OVERWRITE}
+            - VOXSCRIBE_SECRETKEY_OVERWRITE=${VOXSCRIBE_SECRETKEY_OVERWRITE}
             - SECRETKEY_AWS_ACCESS_KEY=${SECRETKEY_AWS_ACCESS_KEY}
             - SECRETKEY_AWS_SECRET_KEY=${SECRETKEY_AWS_SECRET_KEY}
             - SECRETKEY_AWS_REGION=${SECRETKEY_AWS_REGION}
@@ -62,9 +62,9 @@ services:
             - NUMBER_OF_PROXIES=${NUMBER_OF_PROXIES}
             - CORS_ORIGINS=${CORS_ORIGINS}
             - IFRAME_ORIGINS=${IFRAME_ORIGINS}
-            - FLOWISE_FILE_SIZE_LIMIT=${FLOWISE_FILE_SIZE_LIMIT}
+            - VOXSCRIBE_FILE_SIZE_LIMIT=${VOXSCRIBE_FILE_SIZE_LIMIT}
             - SHOW_COMMUNITY_NODES=${SHOW_COMMUNITY_NODES}
-            - DISABLE_FLOWISE_TELEMETRY=${DISABLE_FLOWISE_TELEMETRY}
+            - DISABLE_VOXSCRIBE_TELEMETRY=${DISABLE_VOXSCRIBE_TELEMETRY}
             - DISABLED_NODES=${DISABLED_NODES}
             - MODEL_LIST_CONFIG_JSON=${MODEL_LIST_CONFIG_JSON}
 
@@ -94,7 +94,7 @@ services:
 
             # ENTERPRISE
             - LICENSE_URL=${LICENSE_URL}
-            - FLOWISE_EE_LICENSE_KEY=${FLOWISE_EE_LICENSE_KEY}
+            - VOXSCRIBE_EE_LICENSE_KEY=${VOXSCRIBE_EE_LICENSE_KEY}
             - OFFLINE=${OFFLINE}
             - INVITE_TOKEN_EXPIRY_IN_HOURS=${INVITE_TOKEN_EXPIRY_IN_HOURS}
             - WORKSPACE_INVITE_TEMPLATE_PATH=${WORKSPACE_INVITE_TEMPLATE_PATH}
@@ -149,5 +149,5 @@ services:
             retries: 5
             start_period: 30s
         volumes:
-            - ~/.flowise:/root/.flowise
+            - ~/.voxscribe:/root/.voxscribe
         entrypoint: /bin/sh -c "node /app/healthcheck/healthcheck.js & sleep 5 && pnpm run start-worker"

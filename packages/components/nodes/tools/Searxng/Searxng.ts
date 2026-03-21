@@ -119,7 +119,7 @@ class Searxng_Tools implements INode {
                 ],
                 default: 'json',
                 description:
-                    'Format of the response. You need to enable search formats in settings.yml. Refer to <a target="_blank" href="https://docs.flowiseai.com/integrations/langchain/tools/searxng">SearXNG Setup Guide</a> for more details.',
+                    'Format of the response. You need to enable search formats in settings.yml. Refer to <a target="_blank" href="https://docs.vox-scribe.com/integrations/langchain/tools/searxng">SearXNG Setup Guide</a> for more details.',
                 additionalParams: true
             },
             {

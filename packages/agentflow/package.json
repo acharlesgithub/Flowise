@@ -1,5 +1,5 @@
 {
-    "name": "@brand-ai/agentflow",
+    "name": "@voxscribe/agentflow",
     "version": "0.1.0",
     "description": "Embeddable React component for building and visualizing AI agent workflows",
     "license": "Apache-2.0",

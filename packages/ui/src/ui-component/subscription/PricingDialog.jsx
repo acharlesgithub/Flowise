@@ -57,7 +57,7 @@ const PricingDialog = ({ open, onClose }) => {
 
     const handlePlanClick = async (plan) => {
         if (plan.title === 'Enterprise') {
-            window.location.href = 'mailto:hello@[BRAND].ai'
+            window.location.href = 'mailto:hello@VoxScribe.ai'
             return
         }
 

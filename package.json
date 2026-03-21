@@ -1,8 +1,8 @@
 {
-    "name": "flowise",
+    "name": "voxscribe",
     "version": "0.1.0",
     "private": true,
-    "homepage": "https://brand.ai",
+    "homepage": "https://vox-scribe.com",
     "workspaces": [
         "packages/*",
         "flowise",

@@ -14,7 +14,7 @@ let appDataSource: DataSource
 
 export const init = async (): Promise<void> => {
     let homePath
-    let flowisePath = path.join(getUserHome(), '.brand-ai')
+    let flowisePath = path.join(getUserHome(), '.voxscribe')
     if (!fs.existsSync(flowisePath)) {
         fs.mkdirSync(flowisePath)
     }
@@ -84,7 +84,7 @@ export const init = async (): Promise<void> => {
                 poolErrorHandler: (err) => {
                     logger.error(`Database pool error: ${JSON.stringify(err)}`)
                 },
-                applicationName: '[BRAND]'
+                applicationName: 'VoxScribe'
             })
             break
         default:

@@ -28,7 +28,7 @@ class MsoftOutlookOAuth2 implements INodeCredential {
         this.name = 'microsoftOutlookOAuth2'
         this.version = 1.0
         this.description =
-            'You can find the setup instructions <a target="_blank" href="https://docs.flowiseai.com/integrations/langchain/tools/microsoft-outlook">here</a>'
+            'You can find the setup instructions <a target="_blank" href="https://docs.vox-scribe.com/integrations/langchain/tools/microsoft-outlook">here</a>'
         this.inputs = [
             {
                 label: 'Authorization URL',

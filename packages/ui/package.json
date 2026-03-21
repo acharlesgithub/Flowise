@@ -1,8 +1,8 @@
 {
-    "name": "flowise-ui",
+    "name": "voxscribe-ui",
     "version": "0.1.0",
     "license": "Apache-2.0",
-    "homepage": "https://brand.ai",
+    "homepage": "https://vox-scribe.com",
     "author": {
         "name": "acharlesgithub"
     },

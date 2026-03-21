@@ -1,6 +1,6 @@
 {
-    "short_name": "[BRAND]",
-    "name": "[BRAND] AI Chatbot Builder",
+    "short_name": "VoxScribe",
+    "name": "VoxScribe AI Chatbot Builder",
     "icons": [
         {
             "src": "favicon.ico",

@@ -47,26 +47,26 @@ pnpm run e2e
 
 ## 📖 Documentation
 
-[Flowise Docs](https://docs.flowiseai.com/)
+[Flowise Docs](https://docs.vox-scribe.com/)
 
 ## 🌐 Self Host
 
--   [AWS](https://docs.flowiseai.com/deployment/aws)
--   [Azure](https://docs.flowiseai.com/deployment/azure)
--   [Digital Ocean](https://docs.flowiseai.com/deployment/digital-ocean)
--   [GCP](https://docs.flowiseai.com/deployment/gcp)
+-   [AWS](https://docs.vox-scribe.com/deployment/aws)
+-   [Azure](https://docs.vox-scribe.com/deployment/azure)
+-   [Digital Ocean](https://docs.vox-scribe.com/deployment/digital-ocean)
+-   [GCP](https://docs.vox-scribe.com/deployment/gcp)
 -   <details>
       <summary>Others</summary>
 
-    -   [Railway](https://docs.flowiseai.com/deployment/railway)
+    -   [Railway](https://docs.vox-scribe.com/deployment/railway)
 
         [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/pn4G8S?referralCode=WVNPD9)
 
-    -   [Render](https://docs.flowiseai.com/deployment/render)
+    -   [Render](https://docs.vox-scribe.com/deployment/render)
 
-        [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://docs.flowiseai.com/deployment/render)
+        [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://docs.vox-scribe.com/deployment/render)
 
-    -   [HuggingFace Spaces](https://docs.flowiseai.com/deployment/hugging-face)
+    -   [HuggingFace Spaces](https://docs.vox-scribe.com/deployment/hugging-face)
 
         <a href="https://huggingface.co/spaces/FlowiseAI/Flowise"><img src="https://huggingface.co/datasets/huggingface/badges/raw/main/open-in-hf-spaces-sm.svg" alt="HuggingFace Spaces"></a>
 
@@ -86,7 +86,7 @@ pnpm run e2e
 
 ## ☁️ Flowise Cloud
 
-[Get Started with Flowise Cloud](https://flowiseai.com/)
+[Get Started with Flowise Cloud](https://vox-scribe.com/)
 
 ## 🙋 Support
 

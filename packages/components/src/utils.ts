@@ -554,8 +554,8 @@ export const getEncryptionKeyPath = (): string => {
  * @returns {Promise<string>}
  */
 const getEncryptionKey = async (): Promise<string> => {
-    if (process.env.FLOWISE_SECRETKEY_OVERWRITE !== undefined && process.env.FLOWISE_SECRETKEY_OVERWRITE !== '') {
-        return process.env.FLOWISE_SECRETKEY_OVERWRITE
+    if (process.env.VOXSCRIBE_SECRETKEY_OVERWRITE !== undefined && process.env.VOXSCRIBE_SECRETKEY_OVERWRITE !== '') {
+        return process.env.VOXSCRIBE_SECRETKEY_OVERWRITE
     }
     try {
         if (USE_AWS_SECRETS_MANAGER && secretsManagerClient) {

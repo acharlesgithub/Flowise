@@ -6,7 +6,7 @@ With regard to the FlowiseAI Inc Software:
 This software and associated documentation files (the "Software") may only be
 used in production, if you (and any entity that you represent) have agreed to,
 and are in compliance with, the FlowiseAI Inc Subscription Terms available
-at https://flowiseai.com/terms, or other agreements governing
+at https://vox-scribe.com/terms, or other agreements governing
 the use of the Software, as mutually agreed by you and FlowiseAI Inc, Inc ("FlowiseAI"),
 and otherwise have a valid FlowiseAI Inc Enterprise Edition subscription ("Commercial Subscription")
 for the correct number of hosts as defined in the "Commercial Terms ("Hosts"). Subject to the foregoing sentence,
@@ -28,7 +28,7 @@ Unauthorized copying, modification, distribution, or use of the Enterprise and C
 is strictly prohibited without a valid license agreement from FlowiseAI, Inc.
 
 For information about licensing of the Enterprise and Cloud versions, please contact:
-security@flowiseai.com
+security@vox-scribe.com
 
 The full text of this Commercial License shall
 be included in all copies or substantial portions of the Software.
