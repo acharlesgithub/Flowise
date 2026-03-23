@@ -59,6 +59,10 @@ export class IdentityManager {
         this.permissions = new Permissions()
         if (process.env.STRIPE_SECRET_KEY) {
             this.stripeManager = await StripeManager.getInstance()
+            // VoxScribe SaaS: when Stripe is configured, run as cloud platform
+            // This enables upgrade buttons, billing UI, and subscription features
+            this.currentInstancePlatform = Platform.CLOUD
+            this.licenseValid = true
         }
     }
 
