@@ -2,6 +2,7 @@
  * VoxScribe Auth Middleware - powered by Clerk
  * Replaces enterprise Passport.js auth with Clerk JWT verification
  */
+import crypto from 'crypto'
 import { clerkMiddleware, getAuth } from '@clerk/express'
 import express, { NextFunction, Request, Response } from 'express'
 import { IdentityManager } from '../IdentityManager'
@@ -9,6 +10,27 @@ import { getDataSource } from '../DataSource'
 import { UserSubscription } from '../database/entities/UserSubscription'
 import { StripeManager } from '../StripeManager'
 import logger from '../utils/logger'
+
+/**
+ * Convert a Clerk userId (e.g. "user_3BLj...") to a deterministic UUID v5.
+ * The database expects UUID format for workspaceId, organizationId, etc.
+ */
+function clerkUserIdToUuid(clerkUserId: string): string {
+    // Use a fixed namespace UUID for VoxScribe
+    const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8' // DNS namespace UUID
+    const hash = crypto
+        .createHash('sha1')
+        .update(namespace + clerkUserId)
+        .digest('hex')
+    // Format as UUID v5
+    return [
+        hash.substring(0, 8),
+        hash.substring(8, 12),
+        '5' + hash.substring(13, 16), // version 5
+        ((parseInt(hash.substring(16, 18), 16) & 0x3f) | 0x80).toString(16).padStart(2, '0') + hash.substring(18, 20),
+        hash.substring(20, 32)
+    ].join('-')
+}
 
 /**
  * Initialize Clerk middleware on the Express app.
@@ -67,20 +89,23 @@ export const verifyClerkToken = async (req: Request, res: Response, next: NextFu
         // Non-fatal - continue with empty subscription data
     }
 
+    // Convert Clerk userId to UUID for database compatibility
+    const userUuid = clerkUserIdToUuid(auth.userId)
+
     // @ts-ignore
     req.user = {
         id: auth.userId,
         email: '',
         name: '',
         roleId: 'owner',
-        activeOrganizationId: auth.userId,
+        activeOrganizationId: userUuid,
         activeOrganizationSubscriptionId: subscriptionId,
         activeOrganizationCustomerId: customerId,
         activeOrganizationProductId: productId,
         isOrganizationAdmin: true,
-        activeWorkspaceId: auth.userId,
+        activeWorkspaceId: userUuid,
         activeWorkspace: 'default',
-        assignedWorkspaces: [{ id: auth.userId, name: 'default', role: 'owner', organizationId: auth.userId }],
+        assignedWorkspaces: [{ id: userUuid, name: 'default', role: 'owner', organizationId: userUuid }],
         permissions: [
             'chatflows:crud',
             'agentflows:crud',
