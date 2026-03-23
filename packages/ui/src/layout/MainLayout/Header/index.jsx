@@ -237,7 +237,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
             <Box sx={{ flexGrow: 1 }} />
             {isEnterpriseLicensed && isAuthenticated && <WorkspaceSwitcher />}
             {isCloud && isAuthenticated && <OrgWorkspaceBreadcrumbs />}
-            {isCloud && currentUser?.isOrganizationAdmin && (
+            {isAuthenticated && (
                 <Button
                     variant='contained'
                     sx={{
@@ -264,7 +264,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
                     Upgrade
                 </Button>
             )}
-            {isPricingOpen && isCloud && (
+            {isPricingOpen && (
                 <PricingDialog
                     open={isPricingOpen}
                     onClose={(planUpdated) => {
