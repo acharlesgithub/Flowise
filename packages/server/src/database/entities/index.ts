@@ -26,6 +26,7 @@ import { Workspace } from '../../enterprise/database/entities/workspace.entity'
 import { WorkspaceUser } from '../../enterprise/database/entities/workspace-user.entity'
 import { LoginMethod } from '../../enterprise/database/entities/login-method.entity'
 import { LoginSession } from '../../enterprise/database/entities/login-session.entity'
+import { UserSubscription } from './UserSubscription'
 
 export const entities = {
     ChatFlow,
@@ -57,5 +58,6 @@ export const entities = {
     Workspace,
     WorkspaceUser,
     LoginMethod,
-    LoginSession
+    LoginSession,
+    UserSubscription
 }

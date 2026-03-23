@@ -5,11 +5,13 @@
 import { clerkMiddleware, getAuth } from '@clerk/express'
 import express, { NextFunction, Request, Response } from 'express'
 import { IdentityManager } from '../IdentityManager'
+import { getDataSource } from '../DataSource'
+import { UserSubscription } from '../database/entities/UserSubscription'
+import { StripeManager } from '../StripeManager'
 import logger from '../utils/logger'
 
 /**
  * Initialize Clerk middleware on the Express app.
- * Replaces the old initializeJwtCookieMiddleware from enterprise/passport.
  */
 export const initializeClerkMiddleware = async (app: express.Application, _identityManager: IdentityManager) => {
     if (!process.env.CLERK_SECRET_KEY) {
@@ -22,12 +24,10 @@ export const initializeClerkMiddleware = async (app: express.Application, _ident
 
 /**
  * Verify that the request has a valid Clerk session.
- * Replaces the old verifyToken from enterprise/passport.
- * Called for internal API requests (x-request-from: internal).
+ * Queries UserSubscription table to populate real Stripe subscription data.
  */
-export const verifyClerkToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyClerkToken = async (req: Request, res: Response, next: NextFunction) => {
     if (!process.env.CLERK_SECRET_KEY) {
-        // No Clerk configured - allow all requests (development mode)
         next()
         return
     }
@@ -37,19 +37,48 @@ export const verifyClerkToken = (req: Request, res: Response, next: NextFunction
         return res.status(401).json({ error: 'Unauthorized - please sign in' })
     }
 
-    // Set req.user for downstream compatibility
+    // Look up subscription data from database
+    let subscriptionId = ''
+    let customerId = ''
+    let productId = ''
+    let features: Record<string, string> = {}
+
+    try {
+        const dataSource = getDataSource()
+        const repo = dataSource.getRepository(UserSubscription)
+        const userSub = await repo.findOneBy({ clerkUserId: auth.userId })
+
+        if (userSub && userSub.stripeSubscriptionId && (userSub.status === 'active' || userSub.status === 'trialing')) {
+            subscriptionId = userSub.stripeSubscriptionId
+            customerId = userSub.stripeCustomerId || ''
+            productId = userSub.stripeProductId || ''
+
+            // Load features from Stripe product metadata
+            if (subscriptionId && process.env.STRIPE_SECRET_KEY) {
+                try {
+                    const stripeManager = await StripeManager.getInstance()
+                    features = await stripeManager.getFeaturesByPlan(subscriptionId)
+                } catch {
+                    // Non-fatal - continue without features
+                }
+            }
+        }
+    } catch {
+        // Non-fatal - continue with empty subscription data
+    }
+
     // @ts-ignore
     req.user = {
         id: auth.userId,
         email: '',
         name: '',
         roleId: 'owner',
-        activeOrganizationId: auth.userId, // use userId as org for single-user MVP
-        activeOrganizationSubscriptionId: '',
-        activeOrganizationCustomerId: '',
-        activeOrganizationProductId: '',
+        activeOrganizationId: auth.userId,
+        activeOrganizationSubscriptionId: subscriptionId,
+        activeOrganizationCustomerId: customerId,
+        activeOrganizationProductId: productId,
         isOrganizationAdmin: true,
-        activeWorkspaceId: auth.userId, // use userId as workspace for single-user MVP
+        activeWorkspaceId: auth.userId,
         activeWorkspace: 'default',
         assignedWorkspaces: [{ id: auth.userId, name: 'default', role: 'owner', organizationId: auth.userId }],
         permissions: [
@@ -62,7 +91,7 @@ export const verifyClerkToken = (req: Request, res: Response, next: NextFunction
             'tools:crud',
             'documentStores:crud'
         ],
-        features: {}
+        features
     }
     next()
 }

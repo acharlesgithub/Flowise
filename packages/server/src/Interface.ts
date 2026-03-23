@@ -47,7 +47,9 @@ export enum Platform {
 export enum UserPlan {
     STARTER = 'STARTER',
     PRO = 'PRO',
-    FREE = 'FREE'
+    ENTERPRISE = 'ENTERPRISE',
+    FREE = 'FREE',
+    NONE = 'NONE'
 }
 
 /**

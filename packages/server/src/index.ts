@@ -155,6 +155,10 @@ export class App {
     }
 
     async config() {
+        // Stripe webhook must be registered BEFORE express.json() for raw body signature verification
+        const { handleWebhook } = await import('./controllers/billing')
+        this.app.post('/api/v1/billing/webhook', express.raw({ type: 'application/json' }), handleWebhook)
+
         // Limit is needed to allow sending/receiving base64 encoded string
         const flowise_file_size_limit = process.env.VOXSCRIBE_FILE_SIZE_LIMIT || '50mb'
         this.app.use(express.json({ limit: flowise_file_size_limit }))

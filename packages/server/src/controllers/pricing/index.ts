@@ -3,70 +3,64 @@ import { Request, Response, NextFunction } from 'express'
 const getPricing = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const PRODUCT_IDS = {
-            FREE: process.env.CLOUD_FREE_ID,
             STARTER: process.env.CLOUD_STARTER_ID,
-            PRO: process.env.CLOUD_PRO_ID
+            PRO: process.env.CLOUD_PRO_ID,
+            ENTERPRISE: process.env.CLOUD_ENTERPRISE_ID
         }
         const pricingPlans = [
-            {
-                prodId: PRODUCT_IDS.FREE,
-                title: 'Free',
-                subtitle: 'For trying out the platform',
-                price: '$0',
-                period: '/month',
-                features: [
-                    { text: '2 Flows & Assistants' },
-                    { text: '100 Predictions / month' },
-                    { text: '5MB Storage' },
-                    { text: 'Evaluations & Metrics' },
-                    { text: 'Custom Embedded Chatbot Branding' },
-                    { text: 'Community Support' }
-                ]
-            },
             {
                 prodId: PRODUCT_IDS.STARTER,
                 title: 'Starter',
                 subtitle: 'For individuals & small teams',
-                mostPopular: true,
-                price: '$35',
+                price: '$99',
+                annualPrice: '$990',
                 period: '/month',
+                annualPeriod: '/year',
                 features: [
-                    { text: 'Everything in Free plan, plus' },
                     { text: 'Unlimited Flows & Assistants' },
                     { text: '10,000 Predictions / month' },
                     { text: '1GB Storage' },
+                    { text: 'Evaluations & Metrics' },
+                    { text: 'Custom Embedded Chatbot Branding' },
                     { text: 'Email Support' }
                 ]
             },
             {
                 prodId: PRODUCT_IDS.PRO,
                 title: 'Pro',
-                subtitle: 'For medium-sized businesses',
-                price: '$65',
+                subtitle: 'For growing businesses',
+                mostPopular: true,
+                price: '$199',
+                annualPrice: '$1,990',
                 period: '/month',
+                annualPeriod: '/year',
                 features: [
-                    { text: 'Everything in Starter plan, plus' },
+                    { text: 'Everything in Starter, plus' },
                     { text: '50,000 Predictions / month' },
                     { text: '10GB Storage' },
                     { text: 'Unlimited Workspaces' },
-                    { text: '5 users', subtext: '+ $15/user/month' },
+                    { text: '5 team members' },
                     { text: 'Admin Roles & Permissions' },
                     { text: 'Priority Support' }
                 ]
             },
             {
+                prodId: PRODUCT_IDS.ENTERPRISE,
                 title: 'Enterprise',
                 subtitle: 'For large organizations',
-                price: 'Contact Us',
+                price: '$299',
+                annualPrice: '$2,990',
+                period: '/month',
+                annualPeriod: '/year',
                 features: [
-                    { text: 'On-Premise Deployment' },
-                    { text: 'Air-gapped Environments' },
-                    { text: 'SSO & SAML' },
-                    { text: 'LDAP & RBAC' },
-                    { text: 'Versioning' },
+                    { text: 'Everything in Pro, plus' },
+                    { text: 'Unlimited Predictions' },
+                    { text: 'Unlimited Storage' },
+                    { text: '20 team members' },
+                    { text: 'SSO / SAML' },
                     { text: 'Audit Logs' },
-                    { text: '99.99% Uptime SLA' },
-                    { text: 'Personalized Support' }
+                    { text: '99.9% Uptime SLA' },
+                    { text: 'Dedicated Support' }
                 ]
             }
         ]

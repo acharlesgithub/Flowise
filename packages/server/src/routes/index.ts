@@ -55,6 +55,7 @@ import executionsRouter from './executions'
 import validationRouter from './validation'
 import agentflowv2GeneratorRouter from './agentflowv2-generator'
 import textToSpeechRouter from './text-to-speech'
+import billingRouter from './billing'
 
 // Enterprise auth routes removed - using Clerk for authentication
 
@@ -114,6 +115,7 @@ router.use('/executions', executionsRouter)
 router.use('/validation', validationRouter)
 router.use('/agentflowv2-generator', agentflowv2GeneratorRouter)
 router.use('/text-to-speech', textToSpeechRouter)
+router.use('/billing', billingRouter)
 
 // Enterprise routes removed - auth handled by Clerk
 router.use('/logs', logsRouter)
