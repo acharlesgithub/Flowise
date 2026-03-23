@@ -26,6 +26,12 @@ const PricingDialog = ({ open, onClose }) => {
     }, [open])
 
     const handlePlanClick = async (plan) => {
+        // Free tier - no action needed, user is already on it by default
+        if (plan.isFree) {
+            onClose()
+            return
+        }
+
         if (!plan.prodId) return
 
         setLoadingPlan(plan.title)
@@ -39,7 +45,6 @@ const PricingDialog = ({ open, onClose }) => {
                 }
             } else {
                 // New user - create a Stripe Checkout session
-                // Use the prodId to look up the default monthly price
                 const response = await billingApi.createCheckoutSession(plan.prodId)
                 if (response.data?.url) {
                     window.location.href = response.data.url
@@ -71,16 +76,24 @@ const PricingDialog = ({ open, onClose }) => {
         if (!getPricingPlansApi.data) return []
 
         return getPricingPlansApi.data.map((plan) => {
-            const isCurrentPlan = currentUser?.activeOrganizationProductId === plan.prodId
+            // Free tier: current if user has no subscription
+            const isFreeTier = plan.isFree
+            const hasSubscription = !!currentUser?.activeOrganizationSubscriptionId
+            const isCurrentPlan = isFreeTier ? !hasSubscription : currentUser?.activeOrganizationProductId === plan.prodId
+
+            let buttonText = 'Start 14-Day Free Trial'
+            if (isCurrentPlan) {
+                buttonText = 'Current Plan'
+            } else if (isFreeTier) {
+                buttonText = 'Free Forever'
+            } else if (hasSubscription) {
+                buttonText = 'Change Plan'
+            }
 
             return {
                 ...plan,
                 currentPlan: isCurrentPlan,
-                buttonText: isCurrentPlan
-                    ? 'Current Plan'
-                    : currentUser?.activeOrganizationSubscriptionId
-                    ? 'Change Plan'
-                    : 'Start 14-Day Free Trial',
+                buttonText,
                 buttonVariant: plan.mostPopular ? 'contained' : 'outlined',
                 disabled: isCurrentPlan
             }
@@ -129,7 +142,7 @@ const PricingDialog = ({ open, onClose }) => {
                 </Typography>
                 <Grid container spacing={3} sx={{ p: 2 }}>
                     {pricingPlans.map((plan) => (
-                        <Grid item xs={12} sm={6} md={4} key={plan.title}>
+                        <Grid item xs={12} sm={6} md={3} key={plan.title}>
                             <Box
                                 sx={{
                                     p: 3,

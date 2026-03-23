@@ -38,7 +38,6 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         // If prodId is given, look up the default price
         let resolvedPriceId = priceId
         if (!resolvedPriceId && prodId) {
-            const stripe = stripeManager.getStripe()
             const product = await stripe.products.retrieve(prodId)
             resolvedPriceId = product.default_price as string
             if (!resolvedPriceId) {
@@ -133,10 +132,10 @@ export const getSubscriptionStatus = async (req: Request, res: Response) => {
         const repo = dataSource.getRepository(UserSubscription)
         const userSub = await repo.findOneBy({ clerkUserId })
 
-        if (!userSub) {
+        if (!userSub || userSub.plan === UserPlan.NONE) {
             return res.json({
-                plan: UserPlan.NONE,
-                status: 'none',
+                plan: UserPlan.FREE,
+                status: 'active',
                 trialEnd: null,
                 currentPeriodEnd: null,
                 cancelAtPeriodEnd: false
@@ -199,7 +198,11 @@ export const handleWebhook = async (req: Request, res: Response) => {
 
                 // Retrieve subscription to get product info
                 const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-                const productId = subscription.items.data[0]?.price.product as string
+                const productId = subscription.items.data[0]?.price?.product as string | undefined
+                if (!productId) {
+                    logger.error(`[billing] No product found in subscription items: sub=${subscriptionId}`)
+                    break
+                }
                 const plan = productIdToPlan(productId)
 
                 // Get clerkUserId from subscription metadata or customer metadata
@@ -236,7 +239,11 @@ export const handleWebhook = async (req: Request, res: Response) => {
             case 'customer.subscription.updated': {
                 const subscription = event.data.object as Stripe.Subscription
                 const subscriptionId = subscription.id
-                const productId = subscription.items.data[0]?.price.product as string
+                const productId = subscription.items.data[0]?.price?.product as string | undefined
+                if (!productId) {
+                    logger.error(`[billing] No product found in subscription update: sub=${subscriptionId}`)
+                    break
+                }
                 const plan = productIdToPlan(productId)
 
                 // Find by subscriptionId
@@ -247,6 +254,11 @@ export const handleWebhook = async (req: Request, res: Response) => {
                     if (clerkUserId) {
                         userSub = await repo.findOneBy({ clerkUserId })
                     }
+                }
+
+                if (!userSub) {
+                    logger.warn(`[billing] Subscription update for unknown user: sub=${subscriptionId}`)
+                    break
                 }
 
                 if (userSub) {
@@ -268,10 +280,12 @@ export const handleWebhook = async (req: Request, res: Response) => {
 
                 let userSub = await repo.findOneBy({ stripeSubscriptionId: subscriptionId })
                 if (userSub) {
-                    userSub.plan = UserPlan.NONE
+                    userSub.plan = UserPlan.FREE
                     userSub.status = 'canceled'
+                    userSub.stripeSubscriptionId = null as any
+                    userSub.stripeProductId = null as any
                     await repo.save(userSub)
-                    logger.info(`[billing] Subscription canceled: sub=${subscriptionId}`)
+                    logger.info(`[billing] Subscription canceled, reverted to free: sub=${subscriptionId}`)
                 }
                 break
             }

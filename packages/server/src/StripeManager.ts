@@ -170,12 +170,8 @@ export class StripeManager {
                 product: process.env.CLOUD_PRO_ID as string,
                 price: ''
             },
-            [UserPlan.FREE]: {
-                product: process.env.CLOUD_FREE_ID as string,
-                price: ''
-            },
-            SEAT: {
-                product: process.env.ADDITIONAL_SEAT_ID as string,
+            [UserPlan.ENTERPRISE]: {
+                product: process.env.CLOUD_ENTERPRISE_ID as string,
                 price: ''
             }
         }

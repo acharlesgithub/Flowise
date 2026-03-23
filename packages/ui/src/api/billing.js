@@ -2,9 +2,9 @@ import client from './client'
 
 /**
  * Create a Stripe Checkout session and return the redirect URL.
- * @param {string} priceId - Stripe price ID for the selected plan
+ * @param {string} prodId - Stripe product ID for the selected plan
  */
-const createCheckoutSession = (priceId) => client.post('/billing/create-checkout-session', { priceId })
+const createCheckoutSession = (prodId) => client.post('/billing/create-checkout-session', { prodId })
 
 /**
  * Create a Stripe Customer Portal session for managing subscriptions.
