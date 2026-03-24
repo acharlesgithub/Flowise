@@ -35,6 +35,18 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
             return res.status(400).json({ error: 'priceId or prodId is required' })
         }
 
+        // Look up existing subscription first
+        const dataSource = getDataSource()
+        const repo = dataSource.getRepository(UserSubscription)
+        let userSub = await repo.findOneBy({ clerkUserId })
+
+        // If user already has an active subscription, redirect to portal instead
+        if (userSub?.stripeSubscriptionId && (userSub.status === 'active' || userSub.status === 'trialing')) {
+            logger.info(`[billing] User ${clerkUserId} already has active subscription, redirecting to portal`)
+            const result = await stripeManager.createStripeCustomerPortalSession(req)
+            return res.json(result)
+        }
+
         // If prodId is given, look up the default price
         let resolvedPriceId = priceId
         if (!resolvedPriceId && prodId) {
@@ -52,10 +64,6 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
         }
 
         // Look up or create Stripe customer
-        const dataSource = getDataSource()
-        const repo = dataSource.getRepository(UserSubscription)
-        let userSub = await repo.findOneBy({ clerkUserId })
-
         let customerId: string | undefined
         if (userSub?.stripeCustomerId) {
             customerId = userSub.stripeCustomerId
