@@ -21,6 +21,15 @@ const UNLIMITED_QUOTAS = {
     [LICENSE_QUOTAS.ADDITIONAL_SEATS_LIMIT]: -1
 }
 
+// Free tier quotas for users without a subscription
+const FREE_TIER_QUOTAS = {
+    [LICENSE_QUOTAS.PREDICTIONS_LIMIT]: 100,
+    [LICENSE_QUOTAS.STORAGE_LIMIT]: 50, // 50 MB
+    [LICENSE_QUOTAS.FLOWS_LIMIT]: 1,
+    [LICENSE_QUOTAS.USERS_LIMIT]: 1,
+    [LICENSE_QUOTAS.ADDITIONAL_SEATS_LIMIT]: 0
+}
+
 export class UsageCacheManager {
     private cache: Cache
     private static instance: UsageCacheManager
@@ -110,7 +119,8 @@ export class UsageCacheManager {
     public async getQuotas(subscriptionId: string, withoutCache: boolean = false): Promise<Record<string, number>> {
         const stripeManager = await StripeManager.getInstance()
         if (!stripeManager || !subscriptionId) {
-            return UNLIMITED_QUOTAS
+            // No subscription = free tier with enforced limits
+            return FREE_TIER_QUOTAS
         }
 
         // Skip cache if withoutCache is true

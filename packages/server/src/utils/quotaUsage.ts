@@ -53,7 +53,8 @@ export const checkUsageLimit = async (
     usageCacheManager: UsageCacheManager,
     currentUsage: number
 ) => {
-    if (!usageCacheManager || !subscriptionId) return
+    if (!usageCacheManager) return
+    // Note: we still check even without subscriptionId (free tier gets limited quotas)
 
     const quotas = await usageCacheManager.getQuotas(subscriptionId)
 
@@ -126,7 +127,8 @@ export const updatePredictionsUsage = async (
 }
 
 export const checkPredictions = async (orgId: string, subscriptionId: string, usageCacheManager: UsageCacheManager) => {
-    if (!usageCacheManager || !subscriptionId) return
+    if (!usageCacheManager) return
+    // Note: we still check even without subscriptionId (free tier gets limited quotas)
 
     const currentPredictions: number = (await usageCacheManager.get(`predictions:${orgId}`)) || 0
 
@@ -151,7 +153,8 @@ export const updateStorageUsage = (orgId: string, _: string = '', totalSize: num
 }
 
 export const checkStorage = async (orgId: string, subscriptionId: string, usageCacheManager: UsageCacheManager) => {
-    if (!usageCacheManager || !subscriptionId) return
+    if (!usageCacheManager) return
+    // Note: we still check even without subscriptionId (free tier gets limited quotas)
 
     let currentStorageUsage = 0
     currentStorageUsage = (await usageCacheManager.get(`storage:${orgId}`)) || 0
