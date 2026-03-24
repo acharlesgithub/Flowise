@@ -15,12 +15,24 @@ const PricingDialog = ({ open, onClose }) => {
     const theme = useTheme()
     const { enqueueSnackbar } = useSnackbar()
     const [loadingPlan, setLoadingPlan] = useState(null)
+    const [subscriptionStatus, setSubscriptionStatus] = useState(null)
 
     const getPricingPlansApi = useApi(pricingApi.getPricingPlans)
 
     useEffect(() => {
         if (open) {
             getPricingPlansApi.request()
+            // Always fetch fresh subscription status when dialog opens
+            billingApi
+                .getSubscriptionStatus()
+                .then((res) => {
+                    if (res.data) {
+                        setSubscriptionStatus(res.data)
+                    }
+                })
+                .catch(() => {
+                    // Non-fatal
+                })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open])
@@ -75,18 +87,22 @@ const PricingDialog = ({ open, onClose }) => {
     const pricingPlans = useMemo(() => {
         if (!getPricingPlansApi.data) return []
 
+        // Use fresh subscription status if available, fall back to Redux store
+        const activeProductId = subscriptionStatus?.stripeProductId || currentUser?.activeOrganizationProductId
+        const hasSubscription = !!(subscriptionStatus?.stripeSubscriptionId || currentUser?.activeOrganizationSubscriptionId)
+        const subStatus = subscriptionStatus?.status || ''
+        const isActiveSubscription = hasSubscription && (subStatus === 'active' || subStatus === 'trialing' || !subStatus)
+
         return getPricingPlansApi.data.map((plan) => {
-            // Free tier: current if user has no subscription
             const isFreeTier = plan.isFree
-            const hasSubscription = !!currentUser?.activeOrganizationSubscriptionId
-            const isCurrentPlan = isFreeTier ? !hasSubscription : currentUser?.activeOrganizationProductId === plan.prodId
+            const isCurrentPlan = isFreeTier ? !isActiveSubscription : activeProductId === plan.prodId
 
             let buttonText = 'Start 14-Day Free Trial'
             if (isCurrentPlan) {
                 buttonText = 'Current Plan'
             } else if (isFreeTier) {
                 buttonText = 'Free Forever'
-            } else if (hasSubscription) {
+            } else if (isActiveSubscription) {
                 buttonText = 'Change Plan'
             }
 
@@ -98,7 +114,7 @@ const PricingDialog = ({ open, onClose }) => {
                 disabled: isCurrentPlan
             }
         })
-    }, [getPricingPlansApi.data, currentUser])
+    }, [getPricingPlansApi.data, currentUser, subscriptionStatus])
 
     return (
         <Dialog
@@ -243,7 +259,7 @@ const PricingDialog = ({ open, onClose }) => {
                         </Grid>
                     ))}
                 </Grid>
-                {currentUser?.activeOrganizationSubscriptionId && (
+                {(subscriptionStatus?.stripeSubscriptionId || currentUser?.activeOrganizationSubscriptionId) && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, mb: 2 }}>
                         <Button variant='text' onClick={handleManageBilling} disabled={loadingPlan === 'manage'}>
                             {loadingPlan === 'manage' ? <CircularProgress size={16} color='inherit' sx={{ mr: 1 }} /> : null}

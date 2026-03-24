@@ -147,12 +147,76 @@ export const getSubscriptionStatus = async (req: Request, res: Response) => {
             status: userSub.status,
             stripeSubscriptionId: userSub.stripeSubscriptionId,
             stripeCustomerId: userSub.stripeCustomerId,
+            stripeProductId: userSub.stripeProductId,
             trialEnd: userSub.trialEnd,
             currentPeriodEnd: userSub.currentPeriodEnd,
             cancelAtPeriodEnd: userSub.cancelAtPeriodEnd
         })
     } catch (error: any) {
         logger.error(`[billing] Error getting subscription status: ${error.message}`)
+        return res.status(500).json({ error: error.message })
+    }
+}
+
+/**
+ * Plan limits for each tier
+ */
+const PLAN_LIMITS: Record<
+    string,
+    { predictions: number; storage: number; chatflows: number; documentStores: number; teamMembers: number }
+> = {
+    [UserPlan.FREE]: { predictions: 100, storage: 50, chatflows: 1, documentStores: 2, teamMembers: 1 },
+    [UserPlan.NONE]: { predictions: 100, storage: 50, chatflows: 1, documentStores: 2, teamMembers: 1 },
+    [UserPlan.STARTER]: { predictions: 5000, storage: 500, chatflows: 5, documentStores: 2, teamMembers: 1 },
+    [UserPlan.PRO]: { predictions: 25000, storage: 5120, chatflows: 25, documentStores: 10, teamMembers: 3 },
+    [UserPlan.ENTERPRISE]: { predictions: 50000, storage: 20480, chatflows: 100, documentStores: 50, teamMembers: 10 }
+}
+
+/**
+ * GET /api/v1/billing/usage
+ * Returns the authenticated user's current usage and limits based on their plan.
+ */
+export const getCurrentUsage = async (req: Request, res: Response) => {
+    try {
+        const clerkUserId = req.user?.id
+        if (!clerkUserId) {
+            return res.status(401).json({ error: 'Unauthorized' })
+        }
+
+        const dataSource = getDataSource()
+        const repo = dataSource.getRepository(UserSubscription)
+        const userSub = await repo.findOneBy({ clerkUserId })
+
+        const plan = userSub?.plan && userSub.plan !== UserPlan.NONE ? userSub.plan : UserPlan.FREE
+        const limits = PLAN_LIMITS[plan] || PLAN_LIMITS[UserPlan.FREE]
+
+        // TODO: Track actual usage in a separate table
+        // For now, return 0 usage with correct limits
+        return res.json({
+            predictions: {
+                usage: 0,
+                limit: limits.predictions
+            },
+            storage: {
+                usage: 0,
+                limit: limits.storage // in MB
+            },
+            chatflows: {
+                usage: 0,
+                limit: limits.chatflows
+            },
+            documentStores: {
+                usage: 0,
+                limit: limits.documentStores
+            },
+            plan,
+            planTitle: plan.charAt(0).toUpperCase() + plan.slice(1),
+            trialEnd: userSub?.trialEnd || null,
+            currentPeriodEnd: userSub?.currentPeriodEnd || null,
+            status: userSub?.status || 'free'
+        })
+    } catch (error: any) {
+        logger.error(`[billing] Error getting usage: ${error.message}`)
         return res.status(500).json({ error: error.message })
     }
 }

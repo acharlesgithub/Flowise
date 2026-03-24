@@ -1,5 +1,5 @@
 import express from 'express'
-import { createCheckoutSession, createPortalSession, getSubscriptionStatus } from '../../controllers/billing'
+import { createCheckoutSession, createPortalSession, getSubscriptionStatus, getCurrentUsage } from '../../controllers/billing'
 
 const router = express.Router()
 
@@ -11,6 +11,9 @@ router.post('/create-portal-session', createPortalSession)
 
 // GET /api/v1/billing/status
 router.get('/status', getSubscriptionStatus)
+
+// GET /api/v1/billing/usage
+router.get('/usage', getCurrentUsage)
 
 // Note: webhook route is registered separately in index.ts with raw body parser
 

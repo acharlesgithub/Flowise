@@ -36,6 +36,7 @@ import { IconAlertCircle, IconCreditCard, IconExternalLink, IconSparkles, IconX 
 
 // API
 import accountApi from '@/api/account.api'
+import billingApi from '@/api/billing'
 import pricingApi from '@/api/pricing'
 import userApi from '@/api/user'
 
@@ -52,6 +53,7 @@ import { logoutSuccess, userProfileUpdated } from '@/store/reducers/authSlice'
 // ==============================|| ACCOUNT SETTINGS ||============================== //
 
 const calculatePercentage = (count, total) => {
+    if (!total || total === 0) return 0
     return Math.min((count / total) * 100, 100)
 }
 
@@ -80,6 +82,7 @@ const AccountSettings = () => {
     const [openPricingDialog, setOpenPricingDialog] = useState(false)
     const [openRemoveSeatsDialog, setOpenRemoveSeatsDialog] = useState(false)
     const [openAddSeatsDialog, setOpenAddSeatsDialog] = useState(false)
+    const [subscriptionInfo, setSubscriptionInfo] = useState(null)
     const [includedSeats, setIncludedSeats] = useState(0)
     const [purchasedSeats, setPurchasedSeats] = useState(0)
     const [occupiedSeats, setOccupiedSeats] = useState(0)
@@ -118,6 +121,15 @@ const AccountSettings = () => {
             getPricingPlansApi.request()
             getAdditionalSeatsQuantityApi.request(currentUser?.activeOrganizationSubscriptionId)
             getCurrentUsageApi.request()
+            // Fetch fresh subscription info
+            billingApi
+                .getSubscriptionStatus()
+                .then((res) => {
+                    if (res.data) {
+                        setSubscriptionInfo(res.data)
+                    }
+                })
+                .catch(() => {})
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isCloud, hasBilling])
@@ -183,10 +195,15 @@ const AccountSettings = () => {
     }, [getAdditionalSeatsQuantityApi.data, getAdditionalSeatsQuantityApi.loading])
 
     const currentPlanTitle = useMemo(() => {
-        if (!getPricingPlansApi.data) return ''
-        const currentPlan = getPricingPlansApi.data.find((plan) => plan.prodId === currentUser?.activeOrganizationProductId)
-        return currentPlan?.title || ''
-    }, [getPricingPlansApi.data, currentUser?.activeOrganizationProductId])
+        // Try subscription info first (fresh from API)
+        if (subscriptionInfo?.plan && subscriptionInfo.plan !== 'none') {
+            return subscriptionInfo.plan.charAt(0).toUpperCase() + subscriptionInfo.plan.slice(1)
+        }
+        if (!getPricingPlansApi.data) return 'Free'
+        const activeProductId = subscriptionInfo?.stripeProductId || currentUser?.activeOrganizationProductId
+        const currentPlan = getPricingPlansApi.data.find((plan) => plan.prodId === activeProductId)
+        return currentPlan?.title || 'Free'
+    }, [getPricingPlansApi.data, currentUser?.activeOrganizationProductId, subscriptionInfo])
 
     const handleBillingPortalClick = async () => {
         setIsBillingLoading(true)
@@ -455,21 +472,52 @@ const AccountSettings = () => {
                                                 py: 2
                                             }}
                                         >
-                                            {currentPlanTitle && (
-                                                <Stack sx={{ alignItems: 'center' }} flexDirection='row'>
-                                                    <Typography variant='body2'>Current Organization Plan:</Typography>
-                                                    <Typography sx={{ ml: 1, color: theme.palette.success.dark }} variant='h3'>
-                                                        {currentPlanTitle.toUpperCase()}
+                                            <Stack sx={{ alignItems: 'center' }} flexDirection='row'>
+                                                <Typography variant='body2'>Current Plan:</Typography>
+                                                <Typography sx={{ ml: 1, color: theme.palette.success.dark }} variant='h3'>
+                                                    {currentPlanTitle.toUpperCase()}
+                                                </Typography>
+                                                {subscriptionInfo?.status === 'trialing' && (
+                                                    <Typography
+                                                        sx={{
+                                                            ml: 1.5,
+                                                            px: 1,
+                                                            py: 0.25,
+                                                            backgroundColor: theme.palette.warning.light,
+                                                            borderRadius: 1,
+                                                            fontSize: '0.75rem',
+                                                            fontWeight: 600
+                                                        }}
+                                                    >
+                                                        Trial
                                                     </Typography>
-                                                </Stack>
+                                                )}
+                                            </Stack>
+                                            {subscriptionInfo?.trialEnd && subscriptionInfo?.status === 'trialing' && (
+                                                <Typography variant='body2' color='text.secondary'>
+                                                    Trial ends:{' '}
+                                                    {new Date(subscriptionInfo.trialEnd).toLocaleDateString('en-US', {
+                                                        month: 'long',
+                                                        day: 'numeric',
+                                                        year: 'numeric'
+                                                    })}
+                                                </Typography>
                                             )}
-                                            <Typography
-                                                sx={{ opacity: customization.isDarkMode ? 0.7 : 1 }}
-                                                variant='body2'
-                                                color='text.secondary'
-                                            >
-                                                Update your billing details and subscription
-                                            </Typography>
+                                            {subscriptionInfo?.currentPeriodEnd && subscriptionInfo?.status !== 'trialing' && (
+                                                <Typography variant='body2' color='text.secondary'>
+                                                    {subscriptionInfo?.cancelAtPeriodEnd ? 'Cancels on: ' : 'Renews on: '}
+                                                    {new Date(subscriptionInfo.currentPeriodEnd).toLocaleDateString('en-US', {
+                                                        month: 'long',
+                                                        day: 'numeric',
+                                                        year: 'numeric'
+                                                    })}
+                                                </Typography>
+                                            )}
+                                            {!subscriptionInfo?.stripeSubscriptionId && (
+                                                <Typography variant='body2' color='text.secondary'>
+                                                    Upgrade to unlock more chatflows, predictions, and features.
+                                                </Typography>
+                                            )}
                                         </Box>
                                         <Box
                                             sx={{
@@ -834,12 +882,8 @@ const AccountSettings = () => {
             {openPricingDialog && (isCloud || hasBilling) && (
                 <PricingDialog
                     open={openPricingDialog}
-                    onClose={(planUpdated) => {
+                    onClose={() => {
                         setOpenPricingDialog(false)
-                        if (planUpdated) {
-                            navigate('/')
-                            navigate(0)
-                        }
                     }}
                 />
             )}

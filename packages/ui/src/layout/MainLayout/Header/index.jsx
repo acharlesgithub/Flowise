@@ -267,12 +267,8 @@ const Header = ({ handleLeftDrawerToggle }) => {
             {isPricingOpen && (
                 <PricingDialog
                     open={isPricingOpen}
-                    onClose={(planUpdated) => {
+                    onClose={() => {
                         setIsPricingOpen(false)
-                        if (planUpdated) {
-                            navigate('/')
-                            navigate(0)
-                        }
                     }}
                 />
             )}

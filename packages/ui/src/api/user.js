@@ -24,7 +24,7 @@ const getPlanProration = (subscriptionId, newPlanId) =>
     client.get(`/organization/plan-proration?subscriptionId=${subscriptionId}&newPlanId=${newPlanId}`)
 const updateSubscriptionPlan = (subscriptionId, newPlanId, prorationDate) =>
     client.post(`/organization/update-subscription-plan`, { subscriptionId, newPlanId, prorationDate })
-const getCurrentUsage = () => client.get(`/organization/get-current-usage`)
+const getCurrentUsage = () => client.get(`/billing/usage`)
 
 // workspace users
 const getAllUsersByWorkspaceId = (workspaceId) => client.get(`/workspaceuser?workspaceId=${workspaceId}`)
