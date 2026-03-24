@@ -64,7 +64,7 @@ const AccountSettings = () => {
     const currentUser = useSelector((state) => state.auth.user)
     const customization = useSelector((state) => state.customization)
 
-    const { isCloud } = useConfig()
+    const { isCloud, hasBilling } = useConfig()
 
     const [isLoading, setLoading] = useState(true)
     const [profileName, setProfileName] = useState('')
@@ -114,13 +114,13 @@ const AccountSettings = () => {
     }, [currentUser])
 
     useEffect(() => {
-        if (isCloud) {
+        if (isCloud || hasBilling) {
             getPricingPlansApi.request()
             getAdditionalSeatsQuantityApi.request(currentUser?.activeOrganizationSubscriptionId)
             getCurrentUsageApi.request()
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isCloud])
+    }, [isCloud, hasBilling])
 
     useEffect(() => {
         setLoading(getUserByIdApi.loading)
@@ -433,7 +433,7 @@ const AccountSettings = () => {
                     </Box>
                 ) : (
                     <>
-                        {isCloud && (
+                        {(isCloud || hasBilling) && (
                             <>
                                 <SettingsSection title='Subscription & Billing'>
                                     <Box
@@ -831,7 +831,7 @@ const AccountSettings = () => {
                     </>
                 )}
             </Stack>
-            {openPricingDialog && isCloud && (
+            {openPricingDialog && (isCloud || hasBilling) && (
                 <PricingDialog
                     open={openPricingDialog}
                     onClose={(planUpdated) => {

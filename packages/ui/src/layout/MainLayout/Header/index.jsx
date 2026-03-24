@@ -151,7 +151,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
 
     const [isDark, setIsDark] = useState(customization.isDarkMode)
     const dispatch = useDispatch()
-    const { isEnterpriseLicensed, isCloud, isOpenSource } = useConfig()
+    const { isEnterpriseLicensed, isCloud, isOpenSource, hasBilling } = useConfig()
     const currentUser = useSelector((state) => state.auth.user)
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
     const [isPricingOpen, setIsPricingOpen] = useState(false)
