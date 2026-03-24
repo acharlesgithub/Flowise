@@ -8,8 +8,13 @@ import express, { NextFunction, Request, Response } from 'express'
 import { IdentityManager } from '../IdentityManager'
 import { getDataSource } from '../DataSource'
 import { UserSubscription } from '../database/entities/UserSubscription'
+import { Credential } from '../database/entities/Credential'
 import { StripeManager } from '../StripeManager'
+import { encryptCredentialData } from '../utils'
 import logger from '../utils/logger'
+
+// Track users who have already been provisioned to avoid repeated DB checks
+const provisionedUsers = new Set<string>()
 
 /**
  * Convert a Clerk userId (e.g. "user_3BLj...") to a deterministic UUID v5.
@@ -118,7 +123,49 @@ export const verifyClerkToken = async (req: Request, res: Response, next: NextFu
         ],
         features
     }
+
+    // Auto-provision default OpenAI credential for new users (non-blocking)
+    if (!provisionedUsers.has(auth.userId) && process.env.DEFAULT_OPENAI_API_KEY) {
+        provisionDefaultCredentials(auth.userId, userUuid).catch(() => {})
+    }
+
     next()
+}
+
+/**
+ * Auto-provision a default OpenAI API credential for new users.
+ * Runs once per user (tracked in-memory). Non-blocking.
+ */
+async function provisionDefaultCredentials(clerkUserId: string, workspaceId: string): Promise<void> {
+    try {
+        const dataSource = getDataSource()
+        const credRepo = dataSource.getRepository(Credential)
+
+        // Check if user already has an OpenAI credential
+        const existing = await credRepo.findOneBy({
+            workspaceId,
+            credentialName: 'openAIApi'
+        })
+
+        if (!existing) {
+            const encryptedData = await encryptCredentialData({
+                openAIApiKey: process.env.DEFAULT_OPENAI_API_KEY!
+            })
+
+            const credential = credRepo.create({
+                name: 'VoxScribe OpenAI (Default)',
+                credentialName: 'openAIApi',
+                encryptedData,
+                workspaceId
+            })
+            await credRepo.save(credential)
+            logger.info(`[auth] Auto-provisioned OpenAI credential for user ${clerkUserId}`)
+        }
+
+        provisionedUsers.add(clerkUserId)
+    } catch (error: any) {
+        logger.error(`[auth] Failed to provision credentials: ${error.message}`)
+    }
 }
 
 /**
