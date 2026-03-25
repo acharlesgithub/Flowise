@@ -7,4 +7,4 @@ build
 **/dist
 
 packages/server/.env
-packages/ui/.env
+# packages/ui/.env is NOT ignored - it contains the Clerk publishable key needed at build time
