@@ -25,9 +25,8 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 ENV NODE_OPTIONS=--max-old-space-size=8192
 
-# Clerk publishable key needed at build time for Vite
-ARG VITE_CLERK_PUBLISHABLE_KEY
-ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
+# Clerk publishable key is read from packages/ui/.env during Vite build
+# Do NOT set ENV VITE_CLERK_PUBLISHABLE_KEY here — an empty ENV overrides .env files
 
 WORKDIR /usr/src/voxscribe
 
