@@ -15,7 +15,7 @@ import NavigationScroll from '@/layout/NavigationScroll'
 // Clerk auth
 import { SignIn, useAuth } from '@clerk/clerk-react'
 
-const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_live_Y2xlcmsudm94LXNjcmliZS5jb20k'
 
 // ==============================|| AUTH GATE ||============================== //
 
